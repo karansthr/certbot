@@ -18,26 +18,32 @@ def assertEqual(first, second):
     # Do an extra interface implementation assertion, as the contents were
     # already checked for BlockNode in the assertEqualDirective
     if isinstance(first, interfaces.BlockNode):
-        assert isinstance(second, interfaces.BlockNode)
+        if not isinstance(second, interfaces.BlockNode):
+            raise AssertionError
 
     # Skip tests if filepath includes the pass value. This is done
     # because filepath is variable of the base ParserNode interface, and
     # unless the implementation is actually done, we cannot assume getting
     # correct results from boolean assertion for dirty
     if not isPass(first.filepath) and not isPass(second.filepath):
-        assert first.dirty == second.dirty
+        if first.dirty != second.dirty:
+            raise AssertionError
         # We might want to disable this later if testing with two separate
         # (but identical) directory structures.
-        assert first.filepath == second.filepath
+        if first.filepath != second.filepath:
+            raise AssertionError
 
 def assertEqualComment(first, second): # pragma: no cover
     """ Equality assertion for CommentNode """
 
-    assert isinstance(first, interfaces.CommentNode)
-    assert isinstance(second, interfaces.CommentNode)
+    if not isinstance(first, interfaces.CommentNode):
+        raise AssertionError
+    if not isinstance(second, interfaces.CommentNode):
+        raise AssertionError
 
     if not isPass(first.comment) and not isPass(second.comment):  # type: ignore
-        assert first.comment == second.comment  # type: ignore
+        if first.comment != second.comment:
+            raise AssertionError
 
 def _assertEqualDirectiveComponents(first, second): # pragma: no cover
     """ Handles assertion for instance variables for DirectiveNode and BlockNode"""
@@ -46,16 +52,20 @@ def _assertEqualDirectiveComponents(first, second): # pragma: no cover
     # is unable to figure that out.
     # assert first.enabled == second.enabled
     if not isPass(first.name) and not isPass(second.name):
-        assert first.name == second.name
+        if first.name != second.name:
+            raise AssertionError
 
     if not isPass(first.parameters) and not isPass(second.parameters):
-        assert first.parameters == second.parameters
+        if first.parameters != second.parameters:
+            raise AssertionError
 
 def assertEqualDirective(first, second):
     """ Equality assertion for DirectiveNode """
 
-    assert isinstance(first, interfaces.DirectiveNode)
-    assert isinstance(second, interfaces.DirectiveNode)
+    if not isinstance(first, interfaces.DirectiveNode):
+        raise AssertionError
+    if not isinstance(second, interfaces.DirectiveNode):
+        raise AssertionError
     _assertEqualDirectiveComponents(first, second)
 
 def isPass(value): # pragma: no cover
@@ -105,7 +115,8 @@ def isPassNodeList(nodelist): # pragma: no cover
 def assertEqualSimple(first, second):
     """ Simple assertion """
     if not isPass(first) and not isPass(second):
-        assert first == second
+        if first != second:
+            raise AssertionError
 
 def isEqualVirtualHost(first, second):
     """
@@ -137,6 +148,8 @@ def assertEqualPathsList(first, second):  # pragma: no cover
     if any([isPass(path) for path in second]):
         return
     for fpath in first:
-        assert any([fnmatch.fnmatch(fpath, spath) for spath in second])
+        if not any([fnmatch.fnmatch(fpath, spath) for spath in second]):
+            raise AssertionError
     for spath in second:
-        assert any([fnmatch.fnmatch(fpath, spath) for fpath in first])
+        if not any([fnmatch.fnmatch(fpath, spath) for fpath in first]):
+            raise AssertionError

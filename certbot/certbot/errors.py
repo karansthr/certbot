@@ -51,7 +51,8 @@ class FailedChallenges(AuthorizationError):
 
     """
     def __init__(self, failed_achalls):
-        assert failed_achalls
+        if not failed_achalls:
+            raise AssertionError
         self.failed_achalls = failed_achalls
         super(FailedChallenges, self).__init__()
 

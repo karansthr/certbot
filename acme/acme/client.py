@@ -277,7 +277,8 @@ class Client(ClientBase):
         new_reg = messages.NewRegistration() if new_reg is None else new_reg
         response = self._post(self.directory[new_reg], new_reg)
         # TODO: handle errors
-        assert response.status_code == http_client.CREATED
+        if response.status_code != http_client.CREATED:
+            raise AssertionError
 
         # "Instance of 'Field' has no key/contact member" bug:
         return self._regr_from_response(response)
@@ -329,7 +330,8 @@ class Client(ClientBase):
         new_authz = messages.NewAuthorization(identifier=identifier)
         response = self._post(self.directory.new_authz, new_authz)
         # TODO: handle errors
-        assert response.status_code == http_client.CREATED
+        if response.status_code != http_client.CREATED:
+            raise AssertionError
         return self._authzr_from_response(response, identifier)
 
     def request_domain_challenges(self, domain, new_authzr_uri=None):
@@ -364,7 +366,8 @@ class Client(ClientBase):
         :rtype: `.messages.CertificateResource`
 
         """
-        assert authzrs, "Authorizations list is empty"
+        if not authzrs:
+            raise AssertionError("Authorizations list is empty")
         logger.debug("Requesting issuance...")
 
         # TODO: assert len(authzrs) == number of SANs
@@ -434,7 +437,8 @@ class Client(ClientBase):
             was marked by the CA as invalid
 
         """
-        assert max_attempts > 0
+        if max_attempts <= 0:
+            raise AssertionError
         attempts = collections.defaultdict(int) # type: Dict[messages.AuthorizationResource, int]
         exhausted = set()
 

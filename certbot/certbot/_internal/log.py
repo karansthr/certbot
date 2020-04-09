@@ -98,7 +98,8 @@ def post_arg_parse_setup(config):
         elif isinstance(handler, MemoryHandler):
             memory_handler = handler
     msg = 'Previously configured logging handlers have been removed!'
-    assert memory_handler is not None and stderr_handler is not None, msg
+    if not (memory_handler is not None and stderr_handler is not None):
+        raise AssertionError(msg)
 
     root_logger.addHandler(file_handler)
     root_logger.removeHandler(memory_handler)
@@ -318,7 +319,8 @@ def post_arg_parse_except_hook(exc_type, exc_value, trace, debug, log_path):
     # display message the user, otherwise, a lower level like
     # logger.DEBUG should be used
     if debug or not issubclass(exc_type, Exception):
-        assert constants.QUIET_LOGGING_LEVEL <= logging.ERROR
+        if constants.QUIET_LOGGING_LEVEL > logging.ERROR:
+            raise AssertionError
         logger.error('Exiting abnormally:', exc_info=exc_info)
     else:
         logger.debug('Exiting abnormally:', exc_info=exc_info)

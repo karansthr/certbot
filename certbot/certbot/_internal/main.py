@@ -56,7 +56,8 @@ def _suggest_donation_if_appropriate(config):
     :rtype: None
 
     """
-    assert config.verb != "renew"
+    if config.verb == "renew":
+        raise AssertionError
     if config.staging:
         # --dry-run implies --staging
         return
@@ -77,7 +78,8 @@ def _report_successful_dry_run(config):
 
     """
     reporter_util = zope.component.getUtility(interfaces.IReporter)
-    assert config.verb != "renew"
+    if config.verb == "renew":
+        raise AssertionError
     reporter_util.add_message("The dry run was successful.",
                               reporter_util.HIGH_PRIORITY, on_crash=False)
 
@@ -116,7 +118,8 @@ def _get_and_save_cert(le_client, config, domains=None, certname=None, lineage=N
             renewal.renew_cert(config, domains, le_client, lineage)
         else:
             # TREAT AS NEW REQUEST
-            assert domains is not None
+            if domains is None:
+                raise AssertionError
             logger.info("Obtaining a new certificate")
             lineage = le_client.obtain_and_enroll_certificate(domains, certname)
             if lineage is False:
@@ -446,7 +449,8 @@ def _report_new_cert(config, cert_path, fullchain_path, key_path=None):
         _report_successful_dry_run(config)
         return
 
-    assert cert_path and fullchain_path, "No certificates saved to report."
+    if not (cert_path and fullchain_path):
+        raise AssertionError("No certificates saved to report.")
 
     expiry = crypto_util.notAfter(cert_path).date()
     reporter_util = zope.component.getUtility(interfaces.IReporter)
@@ -746,7 +750,8 @@ def _install_cert(config, le_client, domains, lineage=None):
 
     """
     path_provider = lineage if lineage else config
-    assert path_provider.cert_path is not None
+    if path_provider.cert_path is None:
+        raise AssertionError
 
     le_client.deploy_certificate(domains, path_provider.key_path,
         path_provider.cert_path, path_provider.chain_path, path_provider.fullchain_path)

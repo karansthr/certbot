@@ -64,7 +64,8 @@ class DualNodeBase(object):
                 new_nodes.append(nodeclass(primary=c,
                                            secondary=secondary_res[0]))
         else:
-            assert len(primary_res) == len(secondary_res)
+            if len(primary_res) != len(secondary_res):
+                raise AssertionError
             matches = self._create_matching_list(primary_res, secondary_res)
             for p, s in matches:
                 new_nodes.append(nodeclass(primary=p, secondary=s))
@@ -94,7 +95,8 @@ class DualCommentNode(DualNodeBase):
         secondary = kwargs.pop("secondary")
 
         if primary or secondary:
-            assert primary and secondary
+            if not (primary and secondary):
+                raise AssertionError
             self.primary = primary
             self.secondary = secondary
         else:
@@ -128,7 +130,8 @@ class DualDirectiveNode(DualNodeBase):
         secondary = kwargs.pop("secondary")
 
         if primary or secondary:
-            assert primary and secondary
+            if not (primary and secondary):
+                raise AssertionError
             self.primary = primary
             self.secondary = secondary
         else:
@@ -168,7 +171,8 @@ class DualBlockNode(DualNodeBase):
         secondary = kwargs.pop("secondary")
 
         if primary or secondary:
-            assert primary and secondary
+            if not (primary and secondary):
+                raise AssertionError
             self.primary = primary
             self.secondary = secondary
         else:

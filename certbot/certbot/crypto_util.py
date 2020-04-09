@@ -183,7 +183,8 @@ def make_key(bits):
     :rtype: str
 
     """
-    assert bits >= 1024  # XXX
+    if bits < 1024:
+        raise AssertionError
     key = crypto.PKey()
     key.generate_key(crypto.TYPE_RSA, bits)
     return crypto.dump_privatekey(crypto.FILETYPE_PEM, key)

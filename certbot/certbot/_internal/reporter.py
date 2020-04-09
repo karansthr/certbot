@@ -49,7 +49,8 @@ class Reporter(object):
             printed if the program exits abnormally.
 
         """
-        assert self.HIGH_PRIORITY <= priority <= self.LOW_PRIORITY
+        if self.HIGH_PRIORITY > priority:
+            raise AssertionError
         self.messages.put(self._msg_type(priority, msg, on_crash))
         logger.debug("Reporting to user: %s", msg)
 

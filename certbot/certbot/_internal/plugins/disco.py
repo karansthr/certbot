@@ -205,8 +205,9 @@ class PluginsRegistry(Mapping):
                 constants.OLD_SETUPTOOLS_PLUGINS_ENTRY_POINT),)
         for entry_point in entry_points:
             plugin_ep = PluginEntryPoint(entry_point)
-            assert plugin_ep.name not in plugins, (
-                "PREFIX_FREE_DISTRIBUTIONS messed up")
+            if plugin_ep.name in plugins:
+                raise AssertionError(
+                    "PREFIX_FREE_DISTRIBUTIONS messed up")
             if interfaces.IPluginFactory.providedBy(plugin_ep.plugin_cls):
                 plugins[plugin_ep.name] = plugin_ep
             else:  # pragma: no cover
@@ -271,7 +272,8 @@ class PluginsRegistry(Mapping):
         # use list instead of set because PluginEntryPoint is not hashable
         candidates = [plugin_ep for plugin_ep in six.itervalues(self._plugins)
                       if plugin_ep.initialized and plugin_ep.init() is plugin]
-        assert len(candidates) <= 1
+        if len(candidates) > 1:
+            raise AssertionError
         if candidates:
             return candidates[0]
         return None

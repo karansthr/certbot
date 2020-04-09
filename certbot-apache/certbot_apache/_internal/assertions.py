@@ -143,13 +143,13 @@ def assertEqualPathsList(first, second):  # pragma: no cover
     Checks that the two lists of file paths match. This assertion allows for wildcard
     paths.
     """
-    if any([isPass(path) for path in first]):
+    if any(isPass(path) for path in first):
         return
-    if any([isPass(path) for path in second]):
+    if any(isPass(path) for path in second):
         return
     for fpath in first:
-        if not any([fnmatch.fnmatch(fpath, spath) for spath in second]):
+        if not any(fnmatch.fnmatch(fpath, spath) for spath in second):
             raise AssertionError
     for spath in second:
-        if not any([fnmatch.fnmatch(fpath, spath) for fpath in first]):
+        if not any(fnmatch.fnmatch(fpath, spath) for fpath in first):
             raise AssertionError

@@ -232,7 +232,8 @@ class Directory(jose.JSONDeSerializable):
     def register(cls, resource_body_cls):
         """Register resource."""
         resource_type = resource_body_cls.resource_type
-        assert resource_type not in cls._REGISTERED_TYPES
+        if resource_type in cls._REGISTERED_TYPES:
+            raise AssertionError
         cls._REGISTERED_TYPES[resource_type] = resource_body_cls
         return resource_body_cls
 

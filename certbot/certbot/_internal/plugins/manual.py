@@ -159,7 +159,8 @@ permitted by DNS standards.)
                 port=self.config.http01_port,
                 uri=achall.chall.uri(achall.domain), validation=validation)
         else:
-            assert isinstance(achall.chall, challenges.DNS01)
+            if not isinstance(achall.chall, challenges.DNS01):
+                raise AssertionError
             msg = self._DNS_INSTRUCTIONS.format(
                 domain=achall.validation_domain_name(achall.domain),
                 validation=validation)

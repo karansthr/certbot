@@ -284,7 +284,8 @@ def gen_ss_cert(key, domains, not_before=None,
     extension is used, unless `force_san` is ``True``.
 
     """
-    assert domains, "Must provide one or more hostnames for the cert."
+    if not domains:
+        raise AssertionError("Must provide one or more hostnames for the cert.")
     cert = crypto.X509()
     cert.set_serial_number(int(binascii.hexlify(os.urandom(16)), 16))
     cert.set_version(2)

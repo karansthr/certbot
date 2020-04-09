@@ -62,7 +62,8 @@ class ServerManager(object):
         :rtype: ACMEServerMixin
 
         """
-        assert challenge_type == challenges.HTTP01
+        if challenge_type != challenges.HTTP01:
+            raise AssertionError
         if port in self._instances:
             return self._instances[port]
 

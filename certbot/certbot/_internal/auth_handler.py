@@ -81,7 +81,8 @@ class AuthHandler(object):
                 logger.info('Attempting to clean up outstanding challenges...')
                 raise error
             # All challenges should have been processed by the authenticator.
-            assert len(resps) == len(achalls), 'Some challenges have not been performed.'
+            if len(resps) != len(achalls):
+                raise AssertionError('Some challenges have not been performed.')
 
             # Inform the ACME CA server that challenges are available for validation.
             for achall, resp in zip(achalls, resps):

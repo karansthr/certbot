@@ -440,7 +440,8 @@ def assert_valid_call(prompt, default, cli_flag, force_interactive):
     if cli_flag:
         msg += ("\nYou can set an answer to "
                 "this prompt with the {0} flag".format(cli_flag))
-    assert default is not None or force_interactive, msg
+    if not (default is not None or force_interactive):
+        raise AssertionError(msg)
 
 
 @zope.interface.implementer(interfaces.IDisplay)

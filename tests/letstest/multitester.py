@@ -43,7 +43,6 @@ import traceback
 import urllib2
 
 import boto3
-from botocore.exceptions import ClientError
 import yaml
 
 import fabric
@@ -55,7 +54,6 @@ from fabric.api import local
 from fabric.api import run
 from fabric.api import sudo
 from fabric.context_managers import shell_env
-from fabric.operations import get
 from fabric.operations import put
 
 # Command line parser
